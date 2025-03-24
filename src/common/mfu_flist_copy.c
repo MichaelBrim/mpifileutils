@@ -965,6 +965,12 @@ static int mfu_create_directory(
     /* assume we'll succeed */
     int rc = 0;
 
+    if (copy_opts->copy_to_null) {
+        /* just increment our directory count by one */
+        mfu_copy_stats.total_dirs++;
+        return rc;
+    }
+
     /* get name of directory */
     const char* name = mfu_flist_file_get_name(list, idx);
 
@@ -1146,6 +1152,12 @@ static int mfu_create_link(
     /* assume we'll succeed */
     int rc = 0;
 
+    if (copy_opts->copy_to_null) {
+        /* just increment our file count by one */
+        mfu_copy_stats.total_links++;
+        return rc;
+    }
+
     /* get source name */
     const char* src_path = mfu_flist_file_get_name(list, idx);
 
@@ -1222,6 +1234,12 @@ static int mfu_create_file(
 {
     /* assume we'll succeed */
     int rc = 0;
+
+    if (copy_opts->copy_to_null) {
+        /* just increment our file count by one */
+        mfu_copy_stats.total_files++;
+        return rc;
+    }
 
     /* get source name */
     const char* src_path = mfu_flist_file_get_name(list, idx);
@@ -1374,6 +1392,12 @@ static int mfu_create_hardlink(
 {
     /* assume we'll succeed */
     int rc = 0;
+
+    if (copy_opts->copy_to_null) {
+        /* just increment our file count by one */
+        mfu_copy_stats.total_files++;
+        return rc;
+    }
 
     /* get source name */
     const char* src_path = mfu_flist_file_get_name(list, idx);
