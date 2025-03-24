@@ -696,6 +696,10 @@ static int mfu_copy_set_metadata(
     /* assume we'll succeed */
     int rc = 0;
 
+    if (copy_opts->copy_to_null) {
+        return rc;
+    }
+
     /* determine whether we should print status messages */
     int verbose = (mfu_debug_level >= MFU_LOG_VERBOSE);
 
