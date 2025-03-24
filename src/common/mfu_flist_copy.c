@@ -187,7 +187,7 @@ static int mfu_copy_open_file(
         mfu_file_open(file, flags, mfu_file);
     } else {
         int flags = O_WRONLY | O_CREAT;
-        if (copy_opts->direct) {
+        if (copy_opts->direct && !copy_opts->copy_to_null) {
             flags |= O_DIRECT;
         }
         mfu_file_open(file, flags, mfu_file, DCOPY_DEF_PERMS_FILE);
