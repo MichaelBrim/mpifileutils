@@ -362,6 +362,15 @@ char* mfu_param_path_copy_dest(const char* name, int numpaths,
         mfu_copy_opts_t* mfu_copy_opts, mfu_file_t* mfu_src_file,
         mfu_file_t* mfu_dst_file)
 {
+    char* dest = NULL;
+
+    if (mfu_copy_opts->copy_to_null) {
+        mfu_path* item = mfu_path_from_str(destpath.path);
+        dest = mfu_path_strdup(item);
+        mfu_path_delete(&item);
+        return dest;
+    }
+
     /* identify which source directory this came from */
     int i;
     int idx = -1;
@@ -419,7 +428,7 @@ char* mfu_param_path_copy_dest(const char* name, int numpaths,
     mfu_path_prepend_str(item, destpath->path);
 
     /* convert to a NUL-terminated string */
-    char* dest = mfu_path_strdup(item);
+    dest = mfu_path_strdup(item);
 
     /* free our temporary paths */
     mfu_path_delete(&src);
@@ -433,6 +442,7 @@ void mfu_param_path_check_copy(uint64_t num, const mfu_param_path* paths,
         const mfu_param_path* destpath, mfu_file_t* mfu_src_file,
         mfu_file_t* mfu_dst_file,
         int no_dereference,
+        int null_destination,
         int* flag_valid,
         int* flag_copy_into_dir)
 {
@@ -549,6 +559,15 @@ void mfu_param_path_check_copy(uint64_t num, const mfu_param_path* paths,
                         destpath->orig);
                     valid = 0;
                     goto bcast;
+                }
+            }
+            else if (null_destination) {
+                /* allow /dev/null destination to be a regular file or directory */
+                if(num > 1) {
+                    dest_is_dir = true;
+                }
+                else {
+                    dest_is_file = true;
                 }
             }
             else {

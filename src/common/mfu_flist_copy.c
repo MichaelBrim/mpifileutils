@@ -2487,11 +2487,14 @@ int mfu_flist_copy(
 
     /* TODO: filter out files that are bigger than 0 bytes if we can't read them */
 
-    /* create directories, from top down */
-    int tmp_rc = mfu_create_directories(levels, minlevel, lists, numpaths,
-            paths, destpath, copy_opts, mfu_src_file, mfu_dst_file);
-    if (tmp_rc < 0) {
-        rc = -1;
+    if (! copy_opts->copy_to_null) {
+        /* create directories, from top down */
+        int tmp_rc = mfu_create_directories(levels, minlevel, lists, numpaths,
+                                            paths, destpath, copy_opts,
+                                            mfu_src_file, mfu_dst_file);
+        if (tmp_rc < 0) {
+            rc = -1;
+        }
     }
 
     /* operate on files in batches if batch size is given */
@@ -2550,11 +2553,14 @@ int mfu_flist_copy(
                 mfu_flist* lists2;
                 mfu_flist_array_by_depth(spreadlist, &levels2, &minlevel2, &lists2);
 
-                /* create files and links */
-                tmp_rc = mfu_create_files(levels2, minlevel2, lists2, numpaths,
-                        paths, destpath, copy_opts, mfu_src_file, mfu_dst_file);
-                if (tmp_rc < 0) {
-                    rc = -1;
+                if (! copy_opts->copy_to_null) {
+                    /* create files and links */
+                    tmp_rc = mfu_create_files(levels2, minlevel2, lists2, numpaths,
+                                              paths, destpath, copy_opts,
+                                              mfu_src_file, mfu_dst_file);
+                    if (tmp_rc < 0) {
+                        rc = -1;
+                    }
                 }
 
                 /* copy data */
@@ -3346,6 +3352,9 @@ mfu_copy_opts_t* mfu_copy_opts_new(void)
 
     /* By default, don't use sparse file. */
     opts->sparse = false;
+
+    /* By default, don't use /dev/null as destination. */
+    opts->copy_to_null = false;
 
     /* Set default chunk size */
     opts->chunk_size = MFU_CHUNK_SIZE;

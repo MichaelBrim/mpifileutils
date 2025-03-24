@@ -499,13 +499,20 @@ int main(int argc, char** argv)
             mfu_param_path_set((const char*)(argpaths[numpaths-1]), destpath, mfu_dst_file, false);
         }
 
+        /* check for null destination */
+        if (0 == strcmp(destpath->path, "/dev/null")) {
+            mfu_copy_opts->copy_to_null = true;
+        }
+
         /* Parse the source and destination paths. */
         int valid, copy_into_dir;
 
         /* the last path is the destination path, all others are source paths */
         int numpaths_src = numpaths - 1;
         mfu_param_path_check_copy(numpaths_src, paths, destpath, mfu_src_file, mfu_dst_file,
-                                  mfu_copy_opts->no_dereference, &valid, &copy_into_dir);
+                                  mfu_copy_opts->no_dereference,
+                                  (mfu_copy_opts->copy_to_null ? 1 : 0),
+                                  &valid, &copy_into_dir);
         mfu_copy_opts->copy_into_dir = copy_into_dir;
 
         /* exit job if we found a problem */

@@ -103,6 +103,7 @@ void mfu_param_path_check_copy(
     mfu_file_t* mfu_src_file,       /* IN  - mfu_file for source that specifies which I/O calls to make */
     mfu_file_t* mfu_dst_file,       /* IN  - mfu_file for destination that specifies which I/O calls to make */
     int no_dereference,             /* IN  - if true, don't dereference source symbolic links */
+    int null_destination,           /* IN  - if true, treat destination as /dev/null */
     int* flag_valid,                /* OUT - flag indicating whether combination of source and dest param paths are valid (1) or not (0) */
     int* flag_copy_into_dir         /* OUT - flag indicating whether source items should be copied into destination directory (1) or not (0) */
 );
@@ -138,6 +139,7 @@ typedef struct {
     bool         direct;           /* whether to use O_DIRECT */
     bool         open_noatime;     /* whether to use O_NOATIME */
     bool         sparse;           /* whether to create sparse files */
+    bool         copy_to_null;     /* whether to use /dev/null as destination */
     size_t       chunk_size;       /* size to chunk files by */
     size_t       buf_size;         /* buffer size to read/write to file system */
     char*        block_buf1;       /* buffer to read / write data */

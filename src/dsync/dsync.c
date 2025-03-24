@@ -1362,7 +1362,7 @@ static int dsync_sync_files(
     /* Parse the source and destination paths. */
     int valid, copy_into_dir;
     mfu_param_path_check_copy(1, src_path, dest_path, mfu_src_file, mfu_dst_file,
-                              copy_opts->no_dereference, &valid, &copy_into_dir);
+                              copy_opts->no_dereference, 0, &valid, &copy_into_dir);
     if (!valid) {
         /* TODO we may want to pass a special error to the caller to
          * "exit" instead of continuing. */
