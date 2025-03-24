@@ -2486,10 +2486,10 @@ int mfu_flist_copy(
     mfu_flist_array_by_depth(src_cp_list, &levels, &minlevel, &lists);
 
     /* TODO: filter out files that are bigger than 0 bytes if we can't read them */
-
+    int tmp_rc;
     if (! copy_opts->copy_to_null) {
         /* create directories, from top down */
-        int tmp_rc = mfu_create_directories(levels, minlevel, lists, numpaths,
+        tmp_rc = mfu_create_directories(levels, minlevel, lists, numpaths,
                                             paths, destpath, copy_opts,
                                             mfu_src_file, mfu_dst_file);
         if (tmp_rc < 0) {

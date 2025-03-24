@@ -365,7 +365,7 @@ char* mfu_param_path_copy_dest(const char* name, int numpaths,
     char* dest = NULL;
 
     if (mfu_copy_opts->copy_to_null) {
-        mfu_path* item = mfu_path_from_str(destpath.path);
+        mfu_path* item = mfu_path_from_str(destpath->path);
         dest = mfu_path_strdup(item);
         mfu_path_delete(&item);
         return dest;
