@@ -1825,6 +1825,9 @@ static int mfu_copy_file_normal(
         if (copy_opts->sparse && mfu_is_all_null(buf, bytes_to_write)) {
             skip_write = 1;
         }
+        else if (copy_opts->copy_to_null) {
+            skip_write = 1;
+        }
 
         /* write data to destination file if needed */
         if (! skip_write) {
@@ -1871,17 +1874,19 @@ static int mfu_copy_file_normal(
     }
 #endif
 
-    /* if we wrote the last chunk, truncate the file */
-    off_t last_written = offset + length;
-    off_t file_size_offt = (off_t) file_size;
-    if (last_written >= file_size_offt || file_size == 0) {
-        /* Use ftruncate() here rather than truncate(), because grouplock
-         * of Lustre would cause block to truncate() since the fd is different
-         * from the out_fd. */
-        if (mfu_file_ftruncate(mfu_dst_file, file_size_offt) < 0) {
-            MFU_LOG(MFU_LOG_ERR, "Failed to truncate destination file: %s (errno=%d %s)",
-                dest, errno, strerror(errno));
-            return -1;
+    if (! copy_opts->copy_to_null) {
+        /* if we wrote the last chunk, truncate the file */
+        off_t last_written = offset + length;
+        off_t file_size_offt = (off_t) file_size;
+        if (last_written >= file_size_offt || file_size == 0) {
+            /* Use ftruncate() here rather than truncate(), because grouplock
+            * of Lustre would cause block to truncate() since the fd is different
+            * from the out_fd. */
+            if (mfu_file_ftruncate(mfu_dst_file, file_size_offt) < 0) {
+                MFU_LOG(MFU_LOG_ERR, "Failed to truncate destination file: %s (errno=%d %s)",
+                    dest, errno, strerror(errno));
+                return -1;
+            }
         }
     }
 
